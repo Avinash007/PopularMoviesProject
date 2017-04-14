@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Popular Movies Project</string>
+    <string name="error_msg">Failed to load data... Check Internet Connection</string>
+</resources>
