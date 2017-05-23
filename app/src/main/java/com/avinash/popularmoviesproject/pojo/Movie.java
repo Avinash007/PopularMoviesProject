@@ -17,8 +17,7 @@ public class Movie implements Parcelable {
     private String synopsis;
     private Double rating;
     private String urlImage;
-    private String urlCast;
-    private String urlReviews;
+    private String urlBackdrop;
 
     public Movie() {
 
@@ -31,17 +30,17 @@ public class Movie implements Parcelable {
         synopsis = input.readString();
         rating = input.readDouble();
         urlImage = input.readString();
+        urlBackdrop = input.readString();
     }
 
-    public Movie(Long id, String title, Date releaseDate, String synopsis, Double rating, String urlImage, String urlCast, String urlReviews) {
+    public Movie(Long id, String title, Date releaseDate, String synopsis, Double rating, String urlImage,String urlBackdrop) {
         this.id = id;
         this.title = title;
         this.releaseDate = releaseDate;
         this.synopsis = synopsis;
         this.rating = rating;
         this.urlImage = urlImage;
-        this.urlCast = urlCast;
-        this.urlReviews = urlReviews;
+        this.urlBackdrop = urlBackdrop;
     }
 
     public Long getId() {
@@ -64,17 +63,14 @@ public class Movie implements Parcelable {
         return rating;
     }
 
+    public String getUrlBackdrop() {
+        return urlBackdrop;
+    }
+
     public String getUrlImage() {
         return urlImage;
     }
 
-    public String getUrlCast() {
-        return urlCast;
-    }
-
-    public String getUrlReviews() {
-        return urlReviews;
-    }
 
     public void setId(Long id) {
         this.id = id;
@@ -100,13 +96,10 @@ public class Movie implements Parcelable {
         this.urlImage = urlImage;
     }
 
-    public void setUrlCast(String urlCast) {
-        this.urlCast = urlCast;
+    public void setUrlBackdrop(String urlBackdrop) {
+        this.urlBackdrop = urlBackdrop;
     }
 
-    public void setUrlReviews(String urlReviews) {
-        this.urlReviews = urlReviews;
-    }
 
     @Override
     public String toString() {
@@ -130,6 +123,7 @@ public class Movie implements Parcelable {
         parcel.writeString(synopsis);
         parcel.writeDouble(rating);
         parcel.writeString(urlImage);
+        parcel.writeString(urlBackdrop);
 
     }
 

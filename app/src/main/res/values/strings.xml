@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Popular Movies Project</string>
     <string name="error_msg">Failed to load data... Check Internet Connection</string>
+    <string name="no_reviews">No reviews available</string>
+    <string name="reviews_header">Reviews</string>
+    <string name="no_trailers">No trailers available</string>
 </resources>

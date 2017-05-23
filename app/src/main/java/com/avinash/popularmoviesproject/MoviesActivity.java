@@ -1,7 +1,7 @@
 package com.avinash.popularmoviesproject;
 
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -13,16 +13,20 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.avinash.popularmoviesproject.extras.MoviesJsonUtils;
-import com.avinash.popularmoviesproject.extras.NetworkUtils;
 import com.avinash.popularmoviesproject.extras.UrlBuild;
+import com.avinash.popularmoviesproject.network.VolleySingleton;
 import com.avinash.popularmoviesproject.pojo.Movie;
 import com.avinash.popularmoviesproject.views.MovieAdapter;
 import com.avinash.popularmoviesproject.views.OnMovieClicked;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class MoviesActivity extends AppCompatActivity implements OnMovieClicked {
@@ -34,6 +38,9 @@ public class MoviesActivity extends AppCompatActivity implements OnMovieClicked 
     public static int RATED=2;
     private ArrayList<Movie> movieList;
     public static final String MOVIES_ARRAY="MOVIES_ARRAY";
+    private VolleySingleton volleySingleton;
+    private RequestQueue requestQueue;
+    Toast toast;
 
 
     @Override
@@ -45,9 +52,17 @@ public class MoviesActivity extends AppCompatActivity implements OnMovieClicked 
 
         recyclerView = (RecyclerView) findViewById(R.id.movies_rv);
         movies = (TextView) findViewById(R.id.tv_movies);
+        volleySingleton = VolleySingleton.getsInstance(this);
+        requestQueue = volleySingleton.getRequestQueue(MoviesActivity.this);
 
         mAdapter = new MovieAdapter(MoviesActivity.this, this);
-        recyclerView.setLayoutManager(new GridLayoutManager(this,2));
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            recyclerView.setLayoutManager(new GridLayoutManager(this,2));
+        }
+        else{
+            recyclerView.setLayoutManager(new GridLayoutManager(this,4));
+        }
+
         recyclerView.setAdapter(mAdapter);
         if(savedInstanceState!=null){
             movieList = savedInstanceState.getParcelableArrayList(MOVIES_ARRAY);
@@ -56,24 +71,44 @@ public class MoviesActivity extends AppCompatActivity implements OnMovieClicked 
                 showDataMessage();
             }
             else{
-                showErrorMessage();
+                makeVolleyRequest(POPULAR);
             }
         }
         else{
-            makeMovieSearchQuery(POPULAR);
+            makeVolleyRequest(POPULAR);
         }
 
     }
 
-
-    public void makeMovieSearchQuery(int filterOptions){
-        String webpage = UrlBuild.getRequestURL(1);
-        if(filterOptions == RATED) {
+    public void makeVolleyRequest(int filterOptions){
+        String webpage = null;
+        if(filterOptions == RATED){
             webpage = UrlBuild.getRatedURL(1);
-            Toast.makeText(getApplicationContext(),"Loading Top Rated movies... ",Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),"Loading Top Rated Movies",Toast.LENGTH_SHORT).show();
+        } else{
+            webpage = UrlBuild.getRequestURL(1);
+            Toast.makeText(getApplicationContext(),"Loading Popular Movies",Toast.LENGTH_SHORT).show();
         }
-        new MovieQueryTask().execute(webpage);
         showDataMessage();
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, webpage,null
+                , new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                movieList = parseJsonResponse(response);
+                mAdapter.updateData(movieList);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                showErrorMessage();
+            }
+        });
+        requestQueue.add(request);
+    }
+
+    public ArrayList<Movie> parseJsonResponse(JSONObject response){
+        ArrayList<Movie> s = MoviesJsonUtils.parseMovieResponse(response);
+        return s;
     }
 
     private void showDataMessage(){
@@ -92,7 +127,6 @@ public class MoviesActivity extends AppCompatActivity implements OnMovieClicked 
     public void movieClicked(Movie movie) {
         Intent intent = DetailActivity.newIntent(MoviesActivity.this,movie);
         startActivity(intent);
-
     }
 
     @Override
@@ -101,44 +135,6 @@ public class MoviesActivity extends AppCompatActivity implements OnMovieClicked 
         super.onSaveInstanceState(outState);
     }
 
-    public class MovieQueryTask extends AsyncTask<String, Void, ArrayList<Movie>> {
-
-
-
-        @Override
-        protected ArrayList<Movie> doInBackground(String... strings) {
-            String movieText = null;
-            ArrayList<Movie> movieArrayList = new ArrayList<>();
-            String webpage = strings[0];
-            URL url = null;
-            try {
-                url = new URL(webpage);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                movieText = NetworkUtils.getResponseFromHTTPURL(url);
-                movieArrayList = MoviesJsonUtils.parseMovieResponse(movieText);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return movieArrayList;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Movie> s) {
-            if(!s.isEmpty()){
-                showDataMessage();
-                mAdapter.updateData(s);
-                movieList =s;
-
-            }
-            else{
-                showErrorMessage();
-            }
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -154,14 +150,18 @@ public class MoviesActivity extends AppCompatActivity implements OnMovieClicked 
         switch(id){
             case  R.id.action_rated:
                 filterOptions = RATED;
+                makeVolleyRequest(filterOptions);
                     break;
             case R.id.action_popular:
                 filterOptions = POPULAR;
+                makeVolleyRequest(filterOptions);
                     break;
+            case R.id.action_favorite:
+                startActivity(new Intent(MoviesActivity.this,FavActivity.class));
             default:
                 handled = false;
         }
-        makeMovieSearchQuery(filterOptions);
+
 
         return handled;
     }

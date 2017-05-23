@@ -21,6 +21,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".DetailActivity"></activity>
+
+        <provider
+            android:name=".data.FavContentProvider"
+            android:authorities="com.avinash.popularmoviesproject"
+            android:exported="false" />
+
+        <activity android:name=".FavActivity"></activity>
     </application>
 
 </manifest>

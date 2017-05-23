@@ -17,8 +17,8 @@
 
             <ImageView
                 android:id="@+id/details_poster"
-                android:layout_width="200dp"
-                android:layout_height="300dp" />
+                android:layout_width="match_parent"
+                android:layout_height="200dp" />
 
             <TextView
                 android:id="@+id/details_tv"
@@ -47,6 +47,69 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/details_synopsis"/>
+
+            <TextView
+                android:id="@+id/details_trailers_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Trailers"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:layout_below="@+id/details_ratings"/>
+
+
+            <ImageView
+                android:id="@+id/details_iv_fav"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_action_star_10"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="80dp"/>
+            <View
+                android:id="@+id/border_trailer_header"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#EEE"
+                android:padding="5dp"
+                android:layout_below="@+id/details_trailers_header"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/details_trailers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:layout_below="@+id/border_trailer_header"/>
+
+            <TextView
+                android:id="@+id/details_trailers_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                android:text="@string/no_trailers"
+                android:layout_below="@+id/details_trailers_header"/>
+
+
+            <TextView
+                android:id="@+id/details_reviews_header"
+                android:text="@string/reviews_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:layout_below="@+id/details_trailers"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/details_reviews"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/details_reviews_header"/>
+
+            <TextView
+                android:id="@+id/details_reviews_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                android:text="@string/no_reviews"
+                android:layout_below="@+id/details_reviews_header"/>
 
         </RelativeLayout>
 

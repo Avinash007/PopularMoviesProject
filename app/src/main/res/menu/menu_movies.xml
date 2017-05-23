@@ -13,4 +13,8 @@
         android:title="Popular"
         />
 
+    <item
+        android:id="@+id/action_favorite"
+        android:title="Favorite"/>
+
 </menu>

@@ -6,10 +6,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import com.avinash.popularmoviesproject.R;
+import com.avinash.popularmoviesproject.R2;
 import com.avinash.popularmoviesproject.pojo.Movie;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by AVINASH on 12-04-2017.
@@ -17,13 +20,15 @@ import com.squareup.picasso.Picasso;
 
 public class MovieViewHolder extends RecyclerView.ViewHolder {
 
+    @BindView(R2.id.list_movie_poster_iv)
     ImageView poster;
+
+    @BindView(R2.id.list_movie_poster_pb)
     ProgressBar progressBar;
 
     public MovieViewHolder(View itemView) {
         super(itemView);
-        poster = (ImageView) itemView.findViewById(R.id.list_movie_poster_iv);
-        progressBar = (ProgressBar) itemView.findViewById(R.id.list_movie_poster_pb);
+        ButterKnife.bind(this,itemView);
     }
 
     public void populate(Context context, Movie movie){

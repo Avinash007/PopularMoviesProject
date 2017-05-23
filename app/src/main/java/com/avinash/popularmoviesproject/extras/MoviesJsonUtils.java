@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static com.avinash.popularmoviesproject.extras.Keys.EndPointBoxOffice.KEY_BACKDROP;
 import static com.avinash.popularmoviesproject.extras.Keys.EndPointBoxOffice.KEY_ID;
 import static com.avinash.popularmoviesproject.extras.Keys.EndPointBoxOffice.KEY_MOVIES;
 import static com.avinash.popularmoviesproject.extras.Keys.EndPointBoxOffice.KEY_POSTER;
@@ -27,11 +28,10 @@ import static com.avinash.popularmoviesproject.extras.Keys.EndPointBoxOffice.KEY
 public class MoviesJsonUtils {
 
 
-    public static ArrayList<Movie> parseMovieResponse(String data){
+    public static ArrayList<Movie> parseMovieResponse(JSONObject response){
         ArrayList<Movie> moviesList = new ArrayList<>();
 
         try {
-            JSONObject response = new JSONObject(data);
             if(response!= null || response.length() >0){
                 JSONArray arrayMovies = response.getJSONArray(KEY_MOVIES);
 
@@ -42,6 +42,7 @@ public class MoviesJsonUtils {
                     Double ratings = -1.0;
                     String synopsis = Constants.NA;
                     String posterPath = Constants.NA;
+                    String backdropPath = Constants.NA;
 
                     JSONObject currentMovie = arrayMovies.getJSONObject(i);
                     if(currentMovie.has(KEY_ID) && !currentMovie.isNull(KEY_ID)){
@@ -62,6 +63,10 @@ public class MoviesJsonUtils {
                     if(currentMovie.has(KEY_POSTER) && !currentMovie.isNull(KEY_POSTER)){
                         posterPath = "https://image.tmdb.org/t/p/w500" + currentMovie.getString(KEY_POSTER);
                     }
+                    if(currentMovie.has(KEY_BACKDROP) && !currentMovie.isNull(KEY_BACKDROP)){
+                        backdropPath = "https://image.tmdb.org/t/p/w500" + currentMovie.getString(KEY_BACKDROP);
+                    }
+
 
                     Movie movie = new Movie();
                     movie.setId(id);
@@ -77,6 +82,7 @@ public class MoviesJsonUtils {
                     movie.setRating(ratings);
                     movie.setSynopsis(synopsis);
                     movie.setUrlImage(posterPath);
+                    movie.setUrlBackdrop(backdropPath);
 
                     moviesList.add(movie);
                 }
