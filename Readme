@@ -1,3 +1,6 @@
-This is the initial commit.
+This is the second commit.
 You need to add the Movie Database API key to see the app run.
-You can add the key in MyApplication class, or follow the TODO
+You can add the key in MyApplication class, or follow the TODO.
+This is Popular Movies Stage 2.
+Added functionality for YouTube and Reviews Endpoint.
+Added Content Provider and Database for Favorites movie.
